@@ -1,10 +1,31 @@
+"""
+Program Name: Main.py
+Author Antoni Labsz
+Purpose: Space invader like game
+Starter Code: None
+Date: April 12, 2026
+"""
 import sys
 import pygame
 from player import Player
 from enemy import Enemy
 
 class GameLogic:
+    """
+    The main game state and loop logic
+    - Player input and updates
+    - enemy spawning and movement
+    - collision detection
+    - Score, Lives, and Level tracking
+    - Game states (active, reset, game over)
+    """
     def __init__(self):
+        """
+        Initializes all game systems
+        -Loads assets
+        -creates player and enemy groups
+        -sets initial game state
+        """
         self.font = pygame.font.Font(None, 60)
         self.game_active = False
 
@@ -36,6 +57,13 @@ class GameLogic:
         self.spawn_enemy()
 
     def run(self):
+        """
+        Main game loop:
+        - Manages game states (menu, active, reset, game over)
+        - updates and draws player, nemeis, UI
+        - Handles collisons
+        - Progresses levles when there is no enemies
+        """
         if self.resetting:
             if pygame.time.get_ticks() - self.reset_time < self.reset_delay:
                 return
@@ -95,6 +123,10 @@ class GameLogic:
             self.next_level()
     
     def spawn_enemy(self):
+        """
+        Spawns enemies
+        -5 rows and 10 columns
+        """
         for row in range(5):
             for col in range(10):
                 x = 100 + col * 80
@@ -103,6 +135,11 @@ class GameLogic:
                 self.enemies.add(enemy)
     
     def enemy_movement(self):
+        """
+        Moves enemies closer to player
+        - reverses enemy direction on wall hit
+        - and moves enemies closer each time they hit the wall
+        """
         hit_edge = False
 
         for enemy in self.enemies:
@@ -118,6 +155,12 @@ class GameLogic:
                 enemy.rect.y += self.enemy_drop #move down
 
     def reset_enemies(self):
+        """
+        Resets enemy wave
+        -clears current enemies
+        -spawns new wave
+        - resets movement directon
+        """
         self.enemies.empty()
         self.spawn_enemy()
         self.enemy_direction = 1
@@ -128,6 +171,13 @@ class GameLogic:
         self.level_clearing = False
 
     def game_over(self):
+        """
+        Resets game state when player loses all lives:
+        - stops game
+        - resets player position and bullets
+        -updates high score if needed
+        -resets score and lives
+        """
         self.game_active = False
 
         self.enemies.empty()
